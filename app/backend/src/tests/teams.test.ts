@@ -8,7 +8,6 @@ import Example from '../database/models/ExampleModel';
 import TeamsModel from '../database/models/TeamsModel';
 import { Response } from 'superagent';
 import { findAllResult } from './mocks/teams.mock';
-import e from 'express';
 chai.use(chaiHttp);
 
 const { expect } = chai;

@@ -9,4 +9,14 @@ export default class TeamsModel implements ITeamsModel {
 
     return teams;
   }
+
+  async findById(id: number): Promise<Teams | null> {
+    const team = await this.model.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return team;
+  }
 }
