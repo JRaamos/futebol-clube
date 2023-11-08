@@ -14,12 +14,8 @@ class JWT {
       return res.status(401).json({ message: INVALID_TOKEN });
     }
 
-    const token = authorization.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ message: INVALID_TOKEN });
-    }
-
     try {
+      const token = authorization.split(' ')[1];
       verifyToken(token);
       next();
     } catch (error) {

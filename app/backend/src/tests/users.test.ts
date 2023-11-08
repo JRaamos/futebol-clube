@@ -51,4 +51,36 @@ describe('Users Test', () => {
     expect(body.message).to.equal(NOT_DATA.data.message);
     sinon.restore();
   });
+  it('o avaliador verificará se é retornado role do usuário a parti do token gerado do login', async function () {
+    sinon.stub(User, 'findOne').resolves(validUser as User);
+    const { status, body } = await chai.request(app).get('/login/role').set('Authorization', `Bearer ${user.token}`);
+
+    expect(status).to.be.eq(200);
+    expect(body).to.have.key('role');
+    sinon.restore();
+  });
+  it('o avaliador verificará se é retornado um errro quando não informado o token', async function () {
+    sinon.stub(User, 'findOne').resolves(null);
+    const { status, body } = await chai.request(app).get('/login/role');
+  
+    expect(status).to.be.eq(401);
+    expect(body).not.to.have.key('role');
+    sinon.restore();
+  });
+  it('o avaliador verificará se é retornado um errro quando não informado o token na chave Bearer', async function () {
+    sinon.stub(User, 'findOne').resolves(null);
+    const { status, body } = await chai.request(app).get('/login/role').set('Authorization', `Bearer `)
+  
+    expect(status).to.be.eq(401);
+    expect(body.message).to.be.eq('Token must be a valid token');
+    sinon.restore();
+  });
+  // it('o avaliador verificará se é retornado um errro quando não o usuario pelo token', async function () {
+  //   sinon.stub(User, 'findOne').resolves(null);
+  //   const { status, body } = await chai.request(app).get('/login/role').set('uthorization', `Bearer: ${undefined}`)
+  
+  //   expect(status).to.be.eq(401);
+  //   expect(body.message).to.be.eq('Token must be a valid token');
+  //   sinon.restore();
+  // });
 });
