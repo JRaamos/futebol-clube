@@ -14,7 +14,7 @@ const { expect } = chai;
 
 describe('Users Test', () => {
   it("O avaliador verificará se é possível fazer o login com dados corretos e que, após o acesso, será redirecionado para a tela de jogos", async function () {
-    sinon.stub(User, 'findOne').resolves(user as User);
+    sinon.stub(User, 'findOne').resolves(user.email as unknown as User);
     const { status, body } = await chai.request(app).post('/login').send(user);
 
     expect(status).to.be.eq(200);
