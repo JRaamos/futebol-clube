@@ -12,8 +12,12 @@ const generateToken = (payload: TokenPayload): string => {
   return token;
 };
 
-const verifyToken = (token: string): TokenPayload => {
-  const data = jwt.verify(token, secret) as TokenPayload;
+const verifyToken = (token: string | undefined): TokenPayload => {
+  if (!token) {
+    return null as unknown as TokenPayload;
+  }
+
+  const data = jwt.verify(token, secret) as unknown as TokenPayload;
   return data;
 };
 

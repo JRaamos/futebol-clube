@@ -5,6 +5,7 @@ import { IUserModel } from '../Interfaces/users/IUserModel';
 // import { IUser } from '../Interfaces/users/IUser';
 import { generateToken } from '../utils/jwt.utils';
 import UserModel from '../models/UserModel';
+import { IUser } from '../Interfaces/users/IUser';
 
 export default class UsersService {
   constructor(
@@ -29,6 +30,14 @@ export default class UsersService {
     return {
       status: 'SUCCESSFUL',
       data: { token },
+    };
+  }
+
+  public async findByEmail(email: string): Promise<ServiceResponse<IUser['role'] | null >> {
+    const user = await this.userModel.findByEmail(email);
+    return {
+      status: 'SUCCESSFUL',
+      data: user?.role || null,
     };
   }
 }
