@@ -3,6 +3,7 @@ import { DataTypes, Model, InferAttributes,
 import db from '.';
 
 class Teams extends Model<InferAttributes<Teams>, InferCreationAttributes<Teams>> {
+  [x: string]: any;
   declare id: CreationOptional<number>;
   declare teamName: string;
 }
