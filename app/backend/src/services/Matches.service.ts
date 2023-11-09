@@ -26,4 +26,16 @@ export default class MatchesService {
       data: { message: 'Finished' },
     };
   }
+
+  public async findByIdUpdateGol(
+    id: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ): Promise<ServiceResponse<match | null>> {
+    await this.matchesModel.findByIdUpdateGol(id, homeTeamGoals, awayTeamGoals);
+    return {
+      status: 'SUCCESSFUL',
+      data: { message: 'Goooooool' },
+    };
+  }
 }

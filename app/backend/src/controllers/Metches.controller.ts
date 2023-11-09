@@ -27,4 +27,15 @@ export default class MatchesController {
     const { status, data } = await this.matchesService.findByIdUpdate(Number(id));
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  public async findByIdUpdateGol(req: Request, res: Response) {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    const { status, data } = await this.matchesService.findByIdUpdateGol(
+      Number(id),
+      homeTeamGoals,
+      awayTeamGoals,
+    );
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }

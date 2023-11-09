@@ -32,13 +32,13 @@ export default class MatchesModel implements IMatchesModel {
     return match[1][0];
   }
 
-  async findById(id: number): Promise<Matches | null> {
-    const match = await this.model.findOne({
-      where: {
-        id,
-      },
-    });
+  async findByIdUpdateGol(id: number, homeTeamGoals:
+  number, awayTeamGoals: number): Promise<Matches | null> {
+    const match = await this.model.update(
+      { homeTeamGoals, awayTeamGoals },
+      { where: { id }, returning: true },
+    );
 
-    return match;
+    return match[1][0];
   }
 }
