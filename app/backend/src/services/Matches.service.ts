@@ -38,4 +38,12 @@ export default class MatchesService {
       data: { message: 'Goooooool' },
     };
   }
+
+  public async create(match: IMatches): Promise<ServiceResponse<IMatches>> {
+    const newMatch = await this.matchesModel.create(match);
+    return {
+      status: 'CREATED',
+      data: newMatch,
+    };
+  }
 }

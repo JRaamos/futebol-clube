@@ -5,4 +5,5 @@ export interface IMatchesModel {
   findByIdUpdate(id: number): Promise<IMatches | null>;
   findByIdUpdateGol(id: number,
     homeTeamGoals: number, awayTeamGoals: number): Promise<IMatches | null>;
+  create(match: IMatches): Promise<IMatches>;
 }

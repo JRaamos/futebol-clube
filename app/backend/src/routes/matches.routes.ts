@@ -18,4 +18,10 @@ matchesRouter.patch(
   (req: Request, res: Response) => matchesController.findByIdUpdateGol(req, res),
 );
 
+matchesRouter.post(
+  '/matches',
+  JWT.validateJWT,
+  (req: Request, res: Response) => matchesController.create(req, res),
+);
+
 export default matchesRouter;
