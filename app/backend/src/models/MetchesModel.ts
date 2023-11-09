@@ -24,23 +24,19 @@ export default class MatchesModel implements IMatchesModel {
     return matchesWithTeams;
   }
 
-  async findByIdUpdate(id: number): Promise<Matches | null> {
-    const match = await this.model.update(
+  async findByIdUpdate(id: number): Promise<void> {
+    await this.model.update(
       { inProgress: false },
       { where: { id }, returning: true },
     );
-
-    return match[1][0];
   }
 
   async findByIdUpdateGol(id: number, homeTeamGoals:
-  number, awayTeamGoals: number): Promise<Matches | null> {
-    const match = await this.model.update(
+  number, awayTeamGoals: number): Promise<void> {
+    await this.model.update(
       { homeTeamGoals, awayTeamGoals },
       { where: { id }, returning: true },
     );
-
-    return match[1][0];
   }
 
   async create(match: Matches): Promise<Matches> {
