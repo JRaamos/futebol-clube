@@ -4,8 +4,9 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import { app } from '../app';
 import { Response } from 'superagent';
+
 chai.use(chaiHttp);
-// import validationJWT from '../middlewares/validationJWT';
+
 import User from '../database/models/UserModel';
 import {
   user, userIvalid, passwordIvalid, validUser, notData,
