@@ -22,4 +22,23 @@ export default class MatchesModel implements IMatchesModel {
     });
     return matchesWithTeams;
   }
+
+  async findByIdUpdate(id: number): Promise<Matches | null> {
+    const match = await this.model.update(
+      { inProgress: false },
+      { where: { id }, returning: true },
+    );
+
+    return match[1][0];
+  }
+
+  async findById(id: number): Promise<Matches | null> {
+    const match = await this.model.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return match;
+  }
 }

@@ -21,4 +21,10 @@ export default class MatchesController {
     }
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  public async findByIdUpdate(req: Request, res: Response) {
+    const { id } = req.params;
+    const { status, data } = await this.matchesService.findByIdUpdate(Number(id));
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }
