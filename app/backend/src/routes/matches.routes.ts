@@ -1,5 +1,6 @@
 import { Request, Router, Response } from 'express';
 import JWT from '../middlewares/ValidationsJWT';
+import ValidationsMatches from '../middlewares/ValidationsMatches';
 import MatchesController from '../controllers/Metches.controller';
 
 const matchesController = new MatchesController();
@@ -21,6 +22,7 @@ matchesRouter.patch(
 matchesRouter.post(
   '/matches',
   JWT.validateJWT,
+  ValidationsMatches.validateMatches,
   (req: Request, res: Response) => matchesController.create(req, res),
 );
 

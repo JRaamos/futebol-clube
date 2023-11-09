@@ -4,6 +4,7 @@ import Matches from '../database/models/MetchesModel';
 
 export default class MatchesModel implements IMatchesModel {
   private model = Matches;
+  private teamsModel = Teams;
 
   async findAll(): Promise<Matches[]> {
     const matchesWithTeams = await this.model.findAll({
@@ -54,5 +55,10 @@ export default class MatchesModel implements IMatchesModel {
 
     const newMatch = await this.model.create(newMatchObject);
     return newMatch;
+  }
+
+  async findByTeamId(id: number): Promise<Teams | null > {
+    const team = await this.teamsModel.findByPk(id);
+    return team;
   }
 }

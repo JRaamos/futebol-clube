@@ -2,6 +2,7 @@ import MatchesModel from '../models/MetchesModel';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import { IMatchesModel } from '../Interfaces/matches/IMathesModel';
 import { IMatches } from '../Interfaces/matches/IMatches';
+import { ITeam } from '../Interfaces/teams/ITeam';
 
 type match = {
   message: string;
@@ -39,7 +40,24 @@ export default class MatchesService {
     };
   }
 
+  public async findByTeamId(id: number): Promise<ITeam | null> {
+    const team = await this.matchesModel.findByTeamId(id);
+
+    return team || null;
+  }
+
   public async create(match: IMatches): Promise<ServiceResponse<IMatches>> {
+    const { homeTeamId, awayTeamId } = match;
+    const homeTeam = await this.findByTeamId(homeTeamId);
+    const awayTeam = await this.findByTeamId(awayTeamId);
+
+    if (!homeTeam || !awayTeam) {
+      return {
+        status: 'NOT_FOUND',
+        data: { message: 'There is no team with such id!' },
+      };
+    }
+
     const newMatch = await this.matchesModel.create(match);
     return {
       status: 'CREATED',
