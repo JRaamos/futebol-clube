@@ -78,4 +78,18 @@ export default class MatchesService {
       data: totalPoints,
     };
   }
+
+  public async getAllTeamsPointsAway(): Promise<ServiceResponse<ITeam[]>> {
+    const totalPoints = await this.matchesModel.getAllTeamsPointsAway();
+    if (totalPoints === undefined) {
+      return {
+        status: 'NOT_FOUND',
+        data: { message: 'no' },
+      };
+    }
+    return {
+      status: 'SUCCESSFUL',
+      data: totalPoints,
+    };
+  }
 }

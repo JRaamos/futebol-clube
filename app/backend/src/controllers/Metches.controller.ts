@@ -49,4 +49,9 @@ export default class MatchesController {
     const { status, data } = await this.matchesService.getAllTeamsPoints();
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  public async getAllTeamsPointsAway(req: Request, res: Response) {
+    const { status, data } = await this.matchesService.getAllTeamsPointsAway();
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }

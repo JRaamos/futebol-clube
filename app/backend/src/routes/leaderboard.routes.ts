@@ -9,5 +9,10 @@ leaderboardRouter.get(
   '/leaderboard/home',
   (req: Request, res: Response) => matchesController.getAllTeamsPoints(req, res),
 );
+leaderboardRouter.get(
+
+  '/leaderboard/away',
+  (req: Request, res: Response) => matchesController.getAllTeamsPointsAway(req, res),
+);
 
 export default leaderboardRouter;
