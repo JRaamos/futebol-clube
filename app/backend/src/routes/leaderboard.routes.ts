@@ -6,6 +6,11 @@ const matchesController = new MatchesController();
 const leaderboardRouter = Router();
 
 leaderboardRouter.get(
+  '/leaderboard',
+  (req: Request, res: Response) => matchesController.getAllTeamsPointsInProgress(req, res),
+);
+
+leaderboardRouter.get(
   '/leaderboard/home',
   (req: Request, res: Response) => matchesController.getAllTeamsPoints(req, res),
 );

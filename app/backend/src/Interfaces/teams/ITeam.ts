@@ -4,6 +4,7 @@ export interface ITeam {
 }
 
 export interface ITeamWithPoints extends ITeam {
+  name: string,
   totalPoints: number,
   totalGames: number,
   totalVictories: number,

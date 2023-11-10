@@ -10,6 +10,6 @@ export interface IMatchesModel {
   findByTeamId(id: number): Promise<ITeam | null>;
   // getAllTeams(): Promise<ITeam[] | undefined>;
   getAllTeamsPoints(): Promise<ITeam[] | undefined>;
+  getAllTeamsPointsInProgress(): Promise<ITeam[] | undefined>;
   getAllTeamsPointsAway(): Promise<ITeam[] | undefined>;
-
 }

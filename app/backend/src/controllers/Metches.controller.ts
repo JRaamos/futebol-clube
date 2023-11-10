@@ -11,7 +11,6 @@ export default class MatchesController {
   public async findAll(req: Request, res: Response) {
     const { inProgress } = req.query;
     const { status, data } = await this.matchesService.findAll();
-    console.log(inProgress);
 
     if (inProgress) {
       const inProgressBoolean = inProgress === 'true';
@@ -52,6 +51,11 @@ export default class MatchesController {
 
   public async getAllTeamsPointsAway(req: Request, res: Response) {
     const { status, data } = await this.matchesService.getAllTeamsPointsAway();
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
+
+  public async getAllTeamsPointsInProgress(req: Request, res: Response) {
+    const { status, data } = await this.matchesService.getAllTeamsPointsInProgress();
     return res.status(mapStatusHTTP(status)).json(data);
   }
 }

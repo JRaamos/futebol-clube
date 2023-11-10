@@ -92,4 +92,18 @@ export default class MatchesService {
       data: totalPoints,
     };
   }
+
+  public async getAllTeamsPointsInProgress(): Promise<ServiceResponse<ITeam[]>> {
+    const totalPoints = await this.matchesModel.getAllTeamsPointsInProgress();
+    if (totalPoints === undefined) {
+      return {
+        status: 'NOT_FOUND',
+        data: { message: 'no' },
+      };
+    }
+    return {
+      status: 'SUCCESSFUL',
+      data: totalPoints,
+    };
+  }
 }
