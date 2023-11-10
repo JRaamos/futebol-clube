@@ -8,6 +8,7 @@ export interface IMatchesModel {
     homeTeamGoals: number, awayTeamGoals: number): Promise<void>;
   create(match: IMatches): Promise<IMatches>;
   findByTeamId(id: number): Promise<ITeam | null>;
+  // getAllTeams(): Promise<ITeam[] | undefined>;
   getAllTeamsPoints(): Promise<ITeam[] | undefined>;
   getAllTeamsPointsAway(): Promise<ITeam[] | undefined>;
 

@@ -64,40 +64,40 @@ export default class MatchesModel implements IMatchesModel {
     return newMatch;
   }
 
-  async findByTeamId(id: number): Promise<Teams | null > {
+  async findByTeamId(id: number): Promise<Teams | null> {
     const team = await this.teamsModel.findByPk(id);
     return team;
   }
 
   async getAllTeamsPoints(): Promise<ITeam[] | undefined> {
     const stats = await this.teamsModel.findAll({ include: [{
-      model: Match,
-      as: 'HomeMatches',
-      attributes: [],
-      where: { inProgress: false } }],
+      model: Match, as: 'HomeMatches', attributes: [], where: { inProgress: false } }],
     attributes: [['team_name', 'name'], [Sequelize.fn('COUNT', Sequelize.col('HomeMatches.id')),
-      'totalGames'], [Sequelize.fn('SUM', Sequelize.col(HomeMatchesQuery.homeGols)),
-      'goalsFavor'], [Sequelize.fn('SUM', Sequelize.col(HomeMatchesQuery.awayGols)), 'goalsOwn'],
-    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${HomeMatchesQuery.homeGols} > 
-      ${HomeMatchesQuery.awayGols} THEN 1 ELSE 0 END`)), 'totalVictories'],
-    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${HomeMatchesQuery.homeGols} =
-       ${HomeMatchesQuery.awayGols} THEN 1 ELSE 0 END`)), 'totalDraws'],
-    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${HomeMatchesQuery.homeGols} < 
-      ${HomeMatchesQuery.awayGols} THEN 1 ELSE 0 END`)), 'totalLosses']],
+      'totalGames'], [Sequelize.fn('SUM', Sequelize.col(HomeMatchesQuery.homeGols)), 'goalsFavor'],
+    [Sequelize.fn('SUM', Sequelize.col(HomeMatchesQuery.awayGols)), 'goalsOwn'],
+    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${HomeMatchesQuery.homeGols} >
+     ${HomeMatchesQuery.awayGols}   THEN 1 ELSE 0 END`)), 'totalVictories'],
+    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${HomeMatchesQuery.homeGols} = 
+    ${HomeMatchesQuery.awayGols} THEN 1 ELSE 0 END`)), 'totalDraws'], [Sequelize.fn('SUM', Sequelize
+      .literal(`CASE WHEN ${HomeMatchesQuery.homeGols} < ${HomeMatchesQuery.awayGols} THEN 1 ELSE 0 
+      END`)), 'totalLosses'], [Sequelize.literal(`SUM(${HomeMatchesQuery.homeGols}) - 
+      SUM(${HomeMatchesQuery.awayGols})`), 'goalsBalance'], [Sequelize.fn('SUM', Sequelize.literal(`
+      CASE WHEN home_team_goals > away_team_goals THEN 3 WHEN home_team_goals = away_team_goals
+       THEN 1 ELSE 0 END`)), 'totalPoints']],
+    order: [[Sequelize.literal('totalPoints'), 'DESC'], [Sequelize.literal('goalsBalance'),
+      'DESC'], [Sequelize.literal('goalsFavor'), 'DESC']],
     group: ['teams.id'],
-    raw: true,
-    });
-    return MatchesModel.handleConvertedStats(stats);
+    raw: true }); return MatchesModel.handleConvertedStats(stats);
   }
 
-  async getAllTeamsPointsAway(): Promise<ITeam[] | undefined> {
+  async getAllTeamsPointsAway(): Promise < ITeam[] | undefined > {
     const stats = await this.teamsModel.findAll({ include: [{
       model: Match,
       as: 'AwayMatches',
       attributes: [],
       where: { inProgress: false } }],
-    attributes: [
-      ['team_name', 'name'], [Sequelize.fn('COUNT', Sequelize.col('AwayMatches.id')), 'totalGames'],
+    attributes: [['team_name', 'name'],
+      [Sequelize.fn('COUNT', Sequelize.col('AwayMatches.id')), 'totalGames'],
       [Sequelize.fn('SUM', Sequelize.col(AwayMatchesQuery.awayGols)), 'goalsFavor'],
       [Sequelize.fn('SUM', Sequelize.col(AwayMatchesQuery.homeGols)), 'goalsOwn'],
       [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${AwayMatchesQuery.awayGols} > 
@@ -114,13 +114,15 @@ export default class MatchesModel implements IMatchesModel {
   static handleConvertedStats(stats: ITeam[]) {
     const convertedStats = stats.map((team) => ({
       ...team,
-      totalPoints: Number(team.totalVictories) * 3 + Number(team.totalDraws),
+      totalPoints: Number(team.totalPoints),
       totalGames: Number(team.totalGames),
       totalVictories: Number(team.totalVictories),
       totalDraws: Number(team.totalDraws),
       totalLosses: Number(team.totalLosses),
       goalsFavor: Number(team.goalsFavor),
       goalsOwn: Number(team.goalsOwn),
+      goalsBalance: Number(team.goalsBalance),
+      efficiency: Number(((team.totalPoints / (team.totalGames * 3)) * 100)).toFixed(2),
     }));
     return convertedStats;
   }
