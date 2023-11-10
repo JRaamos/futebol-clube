@@ -92,23 +92,23 @@ export default class MatchesModel implements IMatchesModel {
 
   async getAllTeamsPointsAway(): Promise < ITeamWithPoints[] | undefined > {
     const stats = await this.teamsModel.findAll({ include: [{
-      model: Match,
-      as: 'AwayMatches',
-      attributes: [],
-      where: { inProgress: false } }],
-    attributes: [['team_name', 'name'],
-      [Sequelize.fn('COUNT', Sequelize.col('AwayMatches.id')), 'totalGames'],
-      [Sequelize.fn('SUM', Sequelize.col(AwayMatchesQuery.awayGols)), 'goalsFavor'],
-      [Sequelize.fn('SUM', Sequelize.col(AwayMatchesQuery.homeGols)), 'goalsOwn'],
-      [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${AwayMatchesQuery.awayGols} > 
-        ${AwayMatchesQuery.homeGols} THEN 1 ELSE 0 END`)), 'totalVictories'],
-      [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${AwayMatchesQuery.awayGols} =
-          ${AwayMatchesQuery.homeGols} THEN 1 ELSE 0 END`)), 'totalDraws'],
-      [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${AwayMatchesQuery.awayGols} <
-          ${AwayMatchesQuery.homeGols} THEN 1 ELSE 0 END`)), 'totalLosses']],
+      model: Match, as: 'AwayMatches', attributes: [], where: { inProgress: false } }],
+    attributes: [['team_name', 'name'], [Sequelize.fn('COUNT', Sequelize.col('AwayMatches.id')),
+      'totalGames'], [Sequelize.fn('SUM', Sequelize.col(AwayMatchesQuery.awayGols)), 'goalsFavor'],
+    [Sequelize.fn('SUM', Sequelize.col(AwayMatchesQuery.homeGols)), 'goalsOwn'],
+    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${AwayMatchesQuery.awayGols} > 
+      ${AwayMatchesQuery.homeGols} THEN 1 ELSE 0 END`)), 'totalVictories'], [Sequelize
+      .fn('SUM', Sequelize.literal(`CASE WHEN ${AwayMatchesQuery.awayGols} = 
+      ${AwayMatchesQuery.homeGols} THEN 1 ELSE 0 END`)), 'totalDraws'],
+    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN ${AwayMatchesQuery.awayGols} <
+          ${AwayMatchesQuery.homeGols} THEN 1 ELSE 0 END`)), 'totalLosses'], [Sequelize.literal(`SUM
+          (${AwayMatchesQuery.awayGols}) -  SUM(${AwayMatchesQuery.homeGols})`), 'goalsBalance'],
+    [Sequelize.fn('SUM', Sequelize.literal(`CASE WHEN away_team_goals > home_team_goals THEN 3 WHEN 
+    away_team_goals = home_team_goals THEN 1 ELSE 0 END`)), 'totalPoints']],
     group: ['teams.id'],
-    raw: true });
-    return MatchesModel.handleConvertedStats(stats as unknown as ITeamWithPoints[]);
+    order: [[Sequelize.literal('totalPoints'), 'DESC'], [Sequelize.literal('goalsBalance'),
+      'DESC'], [Sequelize.literal('goalsFavor'), 'DESC']],
+    raw: true }); return MatchesModel.handleConvertedStats(stats as unknown as ITeamWithPoints[]);
   }
 
   static handleConvertedStats(stats: ITeamWithPoints[]) {
