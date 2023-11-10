@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { IMatchesModel } from '../Interfaces/matches/IMathesModel';
 
-import { ITeam } from '../Interfaces/teams/ITeam';
+import { ITeamWithPoints } from '../Interfaces/teams/ITeam';
 import { Teams, Match } from '../database/models/Associations';
 
 const HomeMatchesQuery = {
@@ -69,7 +69,7 @@ export default class MatchesModel implements IMatchesModel {
     return team;
   }
 
-  async getAllTeamsPoints(): Promise<ITeam[] | undefined> {
+  async getAllTeamsPoints(): Promise<ITeamWithPoints[] | undefined> {
     const stats = await this.teamsModel.findAll({ include: [{
       model: Match, as: 'HomeMatches', attributes: [], where: { inProgress: false } }],
     attributes: [['team_name', 'name'], [Sequelize.fn('COUNT', Sequelize.col('HomeMatches.id')),
@@ -87,10 +87,10 @@ export default class MatchesModel implements IMatchesModel {
     order: [[Sequelize.literal('totalPoints'), 'DESC'], [Sequelize.literal('goalsBalance'),
       'DESC'], [Sequelize.literal('goalsFavor'), 'DESC']],
     group: ['teams.id'],
-    raw: true }); return MatchesModel.handleConvertedStats(stats);
+    raw: true }); return MatchesModel.handleConvertedStats(stats as unknown as ITeamWithPoints[]);
   }
 
-  async getAllTeamsPointsAway(): Promise < ITeam[] | undefined > {
+  async getAllTeamsPointsAway(): Promise < ITeamWithPoints[] | undefined > {
     const stats = await this.teamsModel.findAll({ include: [{
       model: Match,
       as: 'AwayMatches',
@@ -108,10 +108,10 @@ export default class MatchesModel implements IMatchesModel {
           ${AwayMatchesQuery.homeGols} THEN 1 ELSE 0 END`)), 'totalLosses']],
     group: ['teams.id'],
     raw: true });
-    return MatchesModel.handleConvertedStats(stats);
+    return MatchesModel.handleConvertedStats(stats as unknown as ITeamWithPoints[]);
   }
 
-  static handleConvertedStats(stats: ITeam[]) {
+  static handleConvertedStats(stats: ITeamWithPoints[]) {
     const convertedStats = stats.map((team) => ({
       ...team,
       totalPoints: Number(team.totalPoints),
